@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
@@ -13,15 +13,11 @@ const Container = styled.div`
   background-color: bisque;
 `;
 
-class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  addContact = (name, number) => {
-    const { contacts } = this.state;
-
+  const addContact = (name, number) => {
     const isDuplicate = contacts.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
@@ -37,40 +33,35 @@ class App extends Component {
       number,
     };
 
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
-    }));
+    setContacts(prevContacts => [...prevContacts, newContact]);
   };
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
-  };
-
-  handleFilterChange = e => {
-    this.setState({ filter: e.target.value });
-  };
-
-  render() {
-    const { contacts, filter } = this.state;
-    const filteredContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+  const deleteContact = contactId => {
+    setContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== contactId)
     );
+  };
 
-    return (
-      <Container>
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContact} />
-        <h2>Contacts</h2>
-        <Filter value={this.state.filter} onChange={this.handleFilterChange} />
-        <ContactList
-          contacts={filteredContacts}
-          onDeleteContact={this.deleteContact}
-        />
-      </Container>
-    );
-  }
-}
+  const handleFilterChange = e => {
+    setFilter(e.target.value);
+  };
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  return (
+    <Container>
+      <h1>Phonebook</h1>
+      <ContactForm onSubmit={addContact} />
+      <h2>Contacts</h2>
+      <Filter value={filter} onChange={handleFilterChange} />
+      <ContactList
+        contacts={filteredContacts}
+        onDeleteContact={deleteContact}
+      />
+    </Container>
+  );
+};
 
 export default App;

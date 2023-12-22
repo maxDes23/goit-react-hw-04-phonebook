@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Form = styled.form`
@@ -26,55 +26,55 @@ const Form = styled.form`
   }
 `;
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+const ContactForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleNameChange = evt => {
+    setName(evt.target.value);
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
+  const handleNumberChange = evt => {
+    setNumber(evt.target.value);
   };
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const { name, number } = this.state;
-    this.props.onSubmit(name, number);
-    this.setState({ name: '', number: '' });
+
+    onSubmit(name, number);
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            value={this.state.name}
-            onChange={this.handleChange}
-            required
-            placeholder="Name"
-          />
-        </label>
-        <label>
-          Number:
-          <input
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
-            placeholder="0123456789"
-            value={this.state.number}
-            onChange={this.handleChange}
-            required
-          />
-        </label>
-        <button type="submit">Add contact</button>
-      </Form>
-    );
-  }
-}
+  return (
+    <Form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input
+          type="text"
+          name="name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          value={name}
+          onChange={handleNameChange}
+          required
+          placeholder="Name"
+        />
+      </label>
+      <label>
+        Number:
+        <input
+          type="tel"
+          name="number"
+          pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
+          placeholder="0123456789"
+          value={number}
+          onChange={handleNumberChange}
+          required
+        />
+      </label>
+      <button type="submit">Add contact</button>
+    </Form>
+  );
+};
 
 export default ContactForm;
